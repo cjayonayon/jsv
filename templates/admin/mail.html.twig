@@ -1,0 +1,10 @@
+<div>
+    <p>Hi, you have been invted by to join the group {{ groupName }}</p>
+    <br>
+    <hr>
+    <p>Username: {{ username }} </p>
+    <br>
+    <p>Temporary Password: {{ password }} </p>
+    <br>
+    <a href="{{ absolute_url(path('accept_invitation', {longId: longId})) }}">Login here to register your account</a>
+</div>

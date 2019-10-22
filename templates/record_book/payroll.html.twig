@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payroll Record Book{% endblock %}
+
+{% block body %}
+    <h1 style="text-align: center;">Add Employee Payment</h1>
+    <div class="small-middle-container">
+    {% for message in app.flashes('notice') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {{form_start(form, {'attr': {'novalidate':'novalidate'}})}}
+            <center><a class="btn btn-secondary" href="{{ path('record_book') }}">Home</a></center>
+            <br>
+
+            {{form_widget(form)}}
+            <input class="btn btn-primary" onclick="return confirm('Please double check your entry! If you are sure click ok.')" type="submit" name="submit" value="SAVE"></input>
+            {# <a class="btn btn-secondary" href="{{ path('record_book') }}">BACK</a> #}
+    {{form_end(form)}}
+    </div>
+<script>
+$(document).ready(function(){
+
+$('#payroll_paymentDate').datepicker({
+    dateFormat: "yy/mm/dd",
+});
+
+$('#payroll_startCoverage').datepicker({
+    dateFormat: "yy/mm/dd",
+});
+
+$('#payroll_endCoverage').datepicker({
+    dateFormat: "yy/mm/dd",
+});
+
+$('#payroll_startCoverage, #payroll_endCoverage').change(function(){
+    var minDate = $("#payroll_startCoverage").val();
+    var maxDate = $("#payroll_endCoverage").val();
+
+    $("#payroll_startCoverage").datepicker('option', 'maxDate',  new Date(maxDate) );
+    $("#payroll_endCoverage").datepicker('option', 'minDate',  new Date(minDate) );
+
+})
+});
+</script>
+{% endblock %}

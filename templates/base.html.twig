@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="stylesheet" type="text/css" 
+        href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+        <link rel="stylesheet" type="text/css"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <style>
+            .small-middle-container{
+                margin: auto;
+                width: 20%;
+            }
+            
+            .limheight {
+            height: 100%;
+            -webkit-column-count: 3;
+            -moz-column-count: 3;
+                    column-count: 3; 
+            }
+
+            .limheight li {
+                display: inline-block; 
+            }
+        </style>
+        <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous">
+        </script>
+        <script type="text/javascript" 
+                charset="utf8" 
+                src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js">
+        </script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    </head>
+    <body>
+    {% if app.user %}
+        <div style="text-align: right;">
+            <h3>
+        {% if is_granted('ROLE_EMPLOYEE') %}
+        {% set login_path = path('employee_logout') %}
+        {% elseif is_granted('ROLE_USER') %}
+        {% set login_path = path('app_logout') %}
+        {% elseif is_granted('ROLE_ADMIN') %}
+        {% set login_path = path('admin_logout') %}
+        {% endif %}
+            You are logged in as {{ app.user.username }}, <a class="btn btn-danger" href="{{ login_path }}">LOG OUT</a>
+            </h3>
+        </div>
+        <hr>
+        <br>
+    {% endif %}
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+    <script type="text/javascript">
+        $(document).ready( function () {
+            $('#myTable').DataTable();
+        });
+    </script>
+</html>

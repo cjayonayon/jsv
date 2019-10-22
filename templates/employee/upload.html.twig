@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Queueing System{% endblock %}
+    {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+<div>
+    <h1 style="text-align: center;">Upload MP4 Video</h1>
+    <div class="small-middle-container">
+        {{form_start(form, {'attr': {'novalidate':'novalidate'}})}}
+            <center><a class="btn btn-secondary" href="{{ path('user_employee') }}">BACK</a></center>
+            <br>
+            {{ form_row(form.uploadFilename) }}
+            
+            <input class="btn btn-primary" type="submit" name="submit" value="SAVE"></input>
+        {{form_end(form)}}
+    </div>
+</div>
+<script>
+    $('.custom-file-input').on('change', function(event) {
+        var inputFile = event.currentTarget;
+        $(inputFile).parent()
+            .find('.custom-file-label')
+            .html(inputFile.files[0].name);
+    });
+</script>
+{% endblock %}

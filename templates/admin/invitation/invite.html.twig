@@ -1,0 +1,25 @@
+{% extends 'admin/home.html.twig' %}
+
+{% block title %}Send Invitation{% endblock %}
+{% block greeting %} Send Invitation Page {% endblock %}
+{% block homeActive %} {% endblock %}
+{% block invitationActive %} active {% endblock %}
+{% block content %}
+<h1 style="text-align: center;"><b>SEND INVITATION<b></h1>
+<div class="small-middle-container">
+    <center><a class="btn btn-primary" href="{{ path('view_invitation') }}">View Invitations</a></center>
+    {% for message in app.flashes('notice') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {{ form_start(form, {'attr': {'novalidate':'novalidate'}}) }}
+        <br>
+        <br>
+        {{ form_row(form.email)}}
+        {{ form_row(form.userGroup, {'label':'Assign Group'}) }}
+        
+        <center><input class="btn btn-primary" type="submit" name="submit" value="Send Invitation"></input></center>
+    {{form_end(form)}}
+</div>
+{% endblock %}

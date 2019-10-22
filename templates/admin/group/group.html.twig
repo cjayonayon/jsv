@@ -1,0 +1,41 @@
+{% extends 'admin/home.html.twig' %}
+
+{% block title %}Create Group{% endblock %}
+{% block greeting %} Create Group Page {% endblock %}
+{% block homeActive %} {% endblock %}
+{% block groupActive %} active {% endblock %}
+{% block content %}
+<h1 style="text-align: center;"><b>CREATE GROUP<b></h1>
+    <div class="small-middle-container">
+        <center><a class="btn btn-primary" href="{{ path('view_group_info') }}">View Group</a></center>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {{form_start(form, {'attr': {'novalidate':'novalidate'}})}}
+            <br>
+            {{ form_row(form.groupName) }}
+            {{ form_row(form.groupDescription) }}
+            {% if img != null %}
+                <label>Group Banner</label>
+                <img style="max-width: 100%" src="{{ asset('uploads/' ~ img) }}"  />
+                <p>Banner file: {{ img }} </p>
+            {% endif %}
+                {{ form_row(form.groupBanner, {'label':'Change Group Banner'}) }}
+            
+            {{ form_row(form.employeeLimit) }}
+
+            <center><input class="btn btn-primary" type="submit" name="submit" value="Create Group"></input></center>
+        {{form_end(form)}}
+    </div>
+
+     <script>
+        $('.custom-file-input').on('change', function(event) {
+            var inputFile = event.currentTarget;
+            $(inputFile).parent()
+                .find('.custom-file-label')
+                .html(inputFile.files[0].name);
+        });
+    </script>
+{% endblock %}

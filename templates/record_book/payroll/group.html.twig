@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payroll Record Book{% endblock %}
+
+{% block body %}
+<style>
+    .btn-pad{
+        /* width: 4%; */
+        padding: 20px;
+    }
+</style>
+    <h1 style="text-align: center;">Group Salary Report</h1>
+    <center>
+        <a class="btn btn-primary" href="{{ path('record_book') }}">Home</a>
+        <a class="btn btn-primary" href="{{ path('report_info') }}">Employee Report</a>
+        <a class="btn btn-primary active" href="{{ path('group_report_info') }}">Group Report</a>
+    <br>
+    <br>
+    <br>
+    <h1><b>{{app.user.group.groupName}}</b></h1>  
+    <br>
+    <br>
+        <a class="btn btn-success btn-lg btn-pad" href="{{ path('view_group_monthly_payroll', {id: app.user.group.id }) }}">View Monthly Breakdown</a>
+        <a class="btn btn-success btn-lg btn-pad" href="{{ path('view_group_yearly_payroll', {id: app.user.group.id }) }}">View Yearly Breakdown</a>  
+    </center>
+
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+    {# <table id="myTable" class="display">
+        <thead>
+        <tr>
+            <th colspan="10" style="text-align: center;" ><h1>{{payrolls[0].groupName}}</h1></th>
+        </tr>
+        <tr>
+            <th>Empid</th>
+            <th>Fullname</th>
+            <th>Total Salary Paid (₱)</th>
+            <th>Group</th>
+            <th>Monthly</th>
+            <th>Yearly</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for payroll in payrolls %}
+        <tr>
+            <td>{{ payroll.employeeId }} </td>
+            <td>{{ payroll.lastName }}, {{payroll.firstName}} {{payroll.middleName}}</td>
+            <td>{{ payroll.total|number_format(2, '.', ',') }}</td>
+            <td>{{ payroll.groupName }}</td>
+            <td>
+                <a class="btn btn-success" href="{{ path('view_employee_monthly_payroll', {id: payroll.employeeId}) }}">View Monthly Breakdown</a>
+            </td>
+            <td>
+                <a class="btn btn-success" href="{{ path('view_employee_yearly_payroll', {id: payroll.employeeId}) }}">View Yearly Breakdown</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td style="text-align: center;" colspan="10">NO EMPLOYEES REGISTERED</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table> #}
+{% endblock %}

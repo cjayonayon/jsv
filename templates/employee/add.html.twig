@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Queueing System{% endblock %}
+    {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+<div>
+    <h1 style="text-align: center;">Add Items</h1>
+    <div class="small-middle-container">
+        {{form_start(form, {'attr': {'novalidate':'novalidate'}})}}
+            <center>
+                <a class="btn btn-secondary" href="{{ path('user_employee') }}">BACK</a>
+            </center>
+            <br>
+            {{ form_row(form.videoId) }}
+            
+            <input id="submitData" class="btn btn-primary" type="submit" name="submit" value="SAVE"></input>
+        {{form_end(form)}}
+    </div>
+</div>
+
+{% endblock %}

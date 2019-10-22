@@ -1,0 +1,44 @@
+{% extends 'admin/home.html.twig' %}
+
+{% block title %}View Group{% endblock %}
+{% block greeting %} View Group Page {% endblock %}
+{% block homeActive %} {% endblock %}
+{% block groupActive %} active {% endblock %}
+{% block content %}
+<h1 style="text-align: center;"><b>VIEW GROUP<b></h1>
+<div>
+    <div style="text-align: center;">
+        <a class="btn btn-primary" href="{{ path('create_group') }}">Create Group</a>
+    </div>
+    <table id="myTable" class="display">
+        <thead>
+        <tr>
+            <th colspan="5" style="text-align: center;" >List of Groups Created</th>
+        </tr>
+        <tr>
+            <th> Group Name </th>
+            <th> Group Description </th>
+            <th> Employee Limit </th>
+            <th  style="text-align: center;"> Action </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for group in groups %}
+        <tr>
+            <td>{{ group.groupName }}</td>
+            <td>{{ group.groupDescription }}</td>
+            <td>{{ group.employeeLimit }}</td>
+            {# {% if group.groupBanner == null %} #}
+            {# <td style="text-align: center;"><a class="btn btn-danger" onclick="return confim('Are you sure you want to delete this group.')" href="{{ path('delete_group', {id: group.id}) }}">Delete</a></td> #}
+            <td style="text-align: center;"><a class="btn btn-primary" href="{{ path('edit_group_info', {id: group.id}) }}">Edit</a></td>
+            {# {% endif %} #}
+        </tr>
+        {% else %}
+        <tr>
+            <td style="text-align: center;" colspan="10">NO GROUPS CREATED</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Employee Record Book{% endblock %}
+    {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+<div>
+    <h1 style="text-align: center;">Create / Edit Employee</h1>
+    <div class="small-middle-container">
+        {{form_start(form, {'attr': {'novalidate':'novalidate'}})}}
+            <center><a class="btn btn-secondary" href="{{ path('employee_info') }}">BACK</a></center>
+            <br>
+            {{ form_row(form.employeeId) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.lastName) }}
+            {{ form_row(form.firstName) }}
+            {{ form_row(form.middleName) }}
+            {{ form_row(form.birthDate) }}
+            {{ form_row(form.address) }}
+            {{ form_row(form.telNumber) }}
+            {{ form_row(form.gender) }}
+            {{ form_row(form.dateEmployed) }}
+            {{ form_row(form.salary) }}
+            
+            <input class="btn btn-primary" type="submit" name="submit" value="SAVE"></input>
+        {{form_end(form)}}
+    </div>
+</div>
+<script>
+$('#employee_dateEmployed').datepicker({
+    dateFormat: "yy/mm/dd",
+    maxDate: 'today',
+});
+
+$('#employee_birthDate').datepicker({
+    changeYear: true,
+    dateFormat: "yy/mm/dd",
+    maxDate: 'today',
+});
+</script>
+{% endblock %}

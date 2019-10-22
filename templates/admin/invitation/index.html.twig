@@ -1,0 +1,51 @@
+{% extends 'admin/home.html.twig' %}
+
+{% block title %}View Invitations{% endblock %}
+{% block greeting %} View Invitations Page {% endblock %}
+{% block homeActive %} {% endblock %}
+{% block invitationActive %} active {% endblock %}
+{% block content %}
+<h1 style="text-align: center;"><b>VIEW INVITATIONS<b></h1>
+<div>
+    <div style="text-align: center;">
+        <a class="btn btn-primary" href="{{ path('send_invitation') }}">Send Invitations</a>
+    </div>
+    {% for message in app.flashes('notice') %}
+        <br>
+        <div class="alert alert-success small-middle-container" style="text-align: center;">
+            {{ message }}
+        </div>
+        <br>
+    {% endfor %}
+    <table id="myTable" class="display">
+        <thead>
+        <tr>
+            <th colspan="5" style="text-align: center;" >List of Invitations</th>
+        </tr>
+        <tr>
+            <th> Email </th>
+            <th> Group </th>
+            <th> Date and Time of Invitation </th>
+            <th> Status </th>
+            <th> Action </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in userInvitations %}
+        <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ user.userGroup.groupName }}</td>
+            <td>{{ user.invitedAt|date('M-d-Y h:i a') }} </td>
+            <td>{{ user.checkExpiration() ? 'Expired' : user.status }}</td>
+            <td>
+                <a class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this invitaion?')" href="{{ path('delete_invitation', {longId: user.longId}) }}">Delete</a>
+            {% if user.checkExpiration() or user.status == 'Pending' %}
+                <a class="btn btn-primary" href="{{ path('resend_invitation', {longId: user.longId}) }}">Resend</a>                
+            {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

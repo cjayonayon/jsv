@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}View Group Monthly Payroll Record{% endblock %}
+
+{% block body %}
+<div style="text-align: center;">
+    <h1><b>Group Monthly Payroll Record</b></h1>
+    <h2>Monthly Payroll Information</h2>
+    <center>
+        <a class="btn btn-primary" href="{{ path('group_report_info') }}">BACK</a>
+        <a class="btn btn-success" href="{{ path('view_group_yearly_payroll', {id: app.user.group.id }) }}">View Yearly Breakdown</a>
+    </center>
+
+    <table id="myTable" class="display">
+        <thead>
+        <tr>
+            <th colspan="10" style="text-align: center;" ><h1>{{ app.user.group.groupName }}</h1></th>
+        </tr>
+        <tr>
+            <th>Date of Payment</th>
+            <th>Employee Name</th>
+            <th>Total (₱)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for monthlyTotal in monthlyTotals %}
+        <tr>
+            <td>{{ date( monthlyTotal.yr ~'-' ~ monthlyTotal.mon ~ '-01') |date('F-Y') }}</td> 
+            <td>{{ monthlyTotal.fullname }}</td>
+            <td>{{ monthlyTotal.total|number_format(2, '.', ',') }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="container">
+    <ol class="v limheight">
+    {% for total in totals %}
+    <li>
+        <h4><b>TOTAL:</b> ₱ {{ total.total|number_format(2, '.', ',') }} </h4>
+        <h5>From The Month Of <b>{{ date( total.yr ~'-' ~ total.mon ~ '-01') |date('F-Y') }}</b></h5>
+    </li>
+    {% endfor %}
+    </ol>
+</div>
+{% endblock %}

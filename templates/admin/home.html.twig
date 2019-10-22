@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AdminController!{% endblock %}
+
+{% block body %}
+
+
+<div class="example-wrapper">
+    <h1 style="text-align: center;">{% block greeting %}Hello Welcome to the Admin Page {% endblock %}</h1>
+</div>
+<div>
+    <hr>
+        <div class="btn-group form-control ">
+            <a href="{{ path('admin_index') }}" class="btn form-control btn-primary btn-block {% block homeActive %} active {% endblock %}"><b>HOME</b></a>
+            <a href="{{ path('view_group_info') }}" class="btn form-control btn-primary {% block groupActive %} {% endblock %}"><b>GROUPS</b></a>
+            <a href="{{ path('view_invitation') }}" class="btn form-control btn-primary {% block invitationActive %} {% endblock %}"><b>INVITATIONS</b></a>
+        </div>
+    <hr>
+    <br>
+    {% block content %}
+    {% endblock %}
+</div>
+{% endblock %}

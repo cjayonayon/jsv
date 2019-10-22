@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}View Employee Payroll Record{% endblock %}
+
+{% block body %}
+<div style="text-align: center;">
+    <h1><b>Employee Payroll Record</b></h1>
+    <h2>Payroll Information</h2>
+    <center>
+        <a class="btn btn-primary" href="{{ path('report_info') }}">BACK</a>
+    </center>
+
+    <table id="myTable" class="display">
+        <thead>
+        <tr>
+            <th colspan="10" style="text-align: center;" ><h1>{{payrolls[0].employeePayroll.firstName}} {{payrolls[0].employeePayroll.middleName}} {{ payrolls[0].employeePayroll.lastName }}</h1></th>
+        </tr>
+        <tr>
+            <th>Payroll Id</th>
+            <th>Date of Payment (m-d-y)</th>
+            <th>Start Date of Payment (m-d-y)</th>
+            <th>End Date of Payment (m-d-y)</th>
+            <th>Salary Paid (₱)</th>
+            <th>Group</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for payroll in payrolls %}
+        <tr>
+            <td>{{ payroll.id }} </td>
+            <td>{{ payroll.paymentDate|date('F-d-Y') }}</td> 
+            <td>{{ payroll.startCoverage|date('F-d-Y') }}</td>
+            <td>{{ payroll.endCoverage|date('F-d-Y') }}</td>
+            <td>{{ payroll.amount|number_format(2, '.', ',') }}</td>
+            <td>{{ payroll.groupPayroll.groupName }}</td>
+            <td></td>            
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="container">
+    {% for yearlyTotal in yearlyTotals %}
+    <h4><b>TOTAL:</b> {{ yearlyTotal.total|number_format(2, '.', ',') }} </h4>
+    <h5>From The Month Of <b>{{ date( yearlyTotal.yr ~'-01-01') |date('Y') }}</b></h5>
+    {% endfor %}
+</div>
+{% endblock %}

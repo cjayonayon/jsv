@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Employee Record Book{% endblock %}
+
+{% block body %}
+<div id="table">
+    {% for message in app.flashes('notice') %}
+        <div class="alert alert-success small-middle-container">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <table id="myTable" class="display">
+        <thead>
+        <tr>
+            <th colspan="2" style="text-align: center;"><a href="{{ path('record_book') }}" class="btn btn-primary">Home</a></th>
+            {% if ctr < app.user.group.employeeLimit %}
+            <th colspan="4" style="text-align: center;" >List of Employee Record</th>
+            <th colspan="6"><a href="{{ path('create_employee_info') }}" class="btn btn-primary btn-block">Create New Employee</a></th>
+            {% else %}
+            <th colspan="10" style="text-align: center;" >List of Employee Record</th>
+            {% endif %}
+        </tr>
+        <tr>
+            <th>Empid</th>
+            <th>Fullname</th>
+            <th>Email</th>
+            <th>
+                Birth date 
+                <br>
+                (m-d-y)
+            </th>
+            <th>Address</th>
+            <th>Tel. #</th>
+            <th>Gender</th>
+            <th>Salary (₱)</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="employeeData">
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.employeeId }} </td>
+            <td>{{ employee.fullname }}</td>
+            <td>{{ employee.email }} </td>
+            <td>{{ employee.birthDate|date('m-d-Y') }}</td>
+            <td>{{ employee.address }}</td>
+            <td>{{ employee.telNumber }}</td>
+            <td>{{ employee.gender }}</td>
+            <td>{{ employee.salary|number_format(2, '.', ',') }}</td>
+            <td colspan="4">
+                <a class="btn btn-primary" href="{{ path('send_employee_invitation', {id: employee.id}) }}">Invite</a>&nbsp&nbsp&nbsp
+                <a class="btn btn-info" href="{{ path('view_employee_info', {id: employee.id}) }}">View</a>&nbsp&nbsp&nbsp  
+                <a class="btn btn-success" href="{{ path('update_employee_info', {id: employee.id}) }}">Edit</a>&nbsp&nbsp&nbsp
+                <a class="btn btn-danger deleteEmployee" data-path="{{ path('delete_employee_info', {id: employee.id}) }}">Delete</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td style="text-align: center;" colspan="10">NO EMPLOYEES REGISTERED</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $("#myTable").on("click", ".deleteEmployee", function(event){
+        event.preventDefault();
+        var deletePath = event.target.getAttribute("data-path");
+        if(confirm("Are you sure you want to delete this employee?")){ 
+            $.ajax({
+                url: deletePath,
+                type: "DELETE",
+            }).done(function(){
+                location.reload();
+            });
+        }
+    });
+</script>
+{% endblock %}

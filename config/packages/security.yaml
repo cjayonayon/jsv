@@ -1,0 +1,95 @@
+security:
+    encoders:
+        App\Entity\Sysadmin\User:
+            algorithm: auto
+        App\Entity\Admin:
+            algorithm: auto
+        App\Entity\Admin\Invitation:
+            algorithm: auto
+        App\Entity\EmployeeUser\EmployeeUser:
+            algorithm: auto
+
+
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\Sysadmin\User
+                property: username
+        admin_user_provider:
+            entity:
+                class: App\Entity\Admin
+                property: username
+        employee_user_provider:
+            entity:
+                class: App\Entity\EmployeeUser\EmployeeUser
+                property: username
+        # used to reload user from session & other features (e.g. switch_user)
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: ~
+            guard:
+                authenticators:
+                    - App\Security\User\LoginAppAuthenticator
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                target: app_login
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: record_book
+            pattern: ^/user
+            provider: app_user_provider
+        admin:
+            anonymous: ~
+            guard:
+                authenticators:
+                    - App\Security\Admin\LoginAppAuthenticator
+            logout:
+                path: admin_logout
+                # where to redirect after logout
+                target: admin_login
+            form_login:
+                login_path: admin_login
+                check_path: admin_login
+                default_target_path: admin_index
+            pattern: ^/admin
+            provider: admin_user_provider
+        employee:
+            anonymous: ~
+            guard:
+                authenticators:
+                    - App\Security\EmployeeUser\LoginAppAuthenticator
+            logout:
+                path: employee_logout
+                # where to redirect after logout
+                target: employee_login
+            form_login:
+                login_path: employee_login
+                check_path: employee_login
+                default_target_path: user_employee
+            pattern: ^/employee
+            provider: employee_user_provider
+
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/admin/security/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }        
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/user/security/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/user, roles: ROLE_USER }
+        - { path: ^/employee/security/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/employee, roles: ROLE_EMPLOYEE }
+        

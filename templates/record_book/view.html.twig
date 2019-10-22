@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}View Employee Record Book{% endblock %}
+
+{% block body %}
+<div style="text-align: center;">
+    <h1><b>Employee Record</b></h1>
+    <h2>Employee Information</h2>
+
+
+    <table class="table-hover" border="1" align="center">
+        <tr>
+            <th>Empid</th>
+            <td>{{ employeeInfo.employeeId }} </td>
+        </tr>
+        <tr>
+            <th>Fullname</th>
+            <td>{{ employeeInfo.firstName }}  {{ employeeInfo.middleName }}  {{ employeeInfo.lastName }} </td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ employeeInfo.email }}</td>
+        </tr>
+        <tr>
+            <th>Birth date (m-d-y)</th>
+            <td>{{ employeeInfo.birthDate|date('m-d-Y') }}</td>
+        </tr>
+        <tr>
+            <th>Address</th>
+            <td>{{ employeeInfo.address }}</td>
+        </tr>
+        <tr>
+            <th>Tel. #</th>
+            <td>{{ employeeInfo.telNumber }}</td>
+        </tr>
+        <tr>
+            <th>Gender</th>
+            <td>{{ employeeInfo.gender }}</td>
+        </tr>
+        <tr>
+            <th>Salary</th>
+            <td>₱{{ employeeInfo.salary }}</td>
+        </tr>
+    </table>
+    <a class="btn btn-secondary" href="{{ path('employee_info') }}">BACK</a>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+<div>
+    <p>Hi, you have been invited to a queueing system</p>
+    <br>
+    <hr>
+    <p>Username: {{ username }} </p>
+    <br>
+    <p>Temporary Password: {{ password }} </p>
+    <br>
+    <a href="{{ absolute_url(path('verify_employee_email', {id: id})) }}">Login here to register your account</a>
+</div>

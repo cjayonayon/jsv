@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Employee Record Book{% endblock %}
+
+{% block body %}
+<style>
+    .btn-pad{
+        width: 100%;
+        padding: 50px;
+    }
+</style>
+<div class="container text-center">    
+  <div class="row">
+    <div class="col-sm-2">
+        <div class="panel panel-default text-left">
+            <div class="well">
+                <p><b> Group Name: </b> {{app.user.group.groupName}}<p>
+                <p><b>Group Description: </b>{{app.user.group.groupDescription}}  <p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-8">
+    
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="well">
+                <img style="max-width: 100%" src="{{ asset('uploads/' ~ app.user.group.groupBanner) }}"  />
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        <br>
+        <br>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="well">
+            <a href="{{ path('employee_info') }}" class="btn btn-primary btn-lg btn-block btn-pad">EMPLOYEE</a></th>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="well">
+            <a href="{{ path('payroll') }}" class="btn btn-primary btn-lg btn-block btn-pad">PAYROLL</a></th>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="well">
+            <a href="{{ path('report_info') }}" class="btn btn-primary btn-lg btn-block btn-pad">REPORT</a></th>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    
+    <div class="col-sm-2">   
+        <div class="well">
+            <p><b> Group Limit: </b>  {{app.user.group.employeeLimit}} <p>
+            <p><b> Total Number of Employee: </b>  {{ ctr }}/{{app.user.group.employeeLimit}} <p>
+        </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
