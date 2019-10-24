@@ -42,7 +42,6 @@
 
 
 <script>
-  var updateQueue = [];
 
   $("#itemTable").on("click", ".deleteItem", function(event){
     event.preventDefault();
@@ -50,19 +49,9 @@
     $.ajax({
         url: deletePath,
         type: "DELETE",
-    }).done(function(){
-      $('#itemTable').load(' #itemTable');
-      
-      $.ajax({ 
-        url: "{{ path('updateQueueItem') }}",
-        type: 'GET',
-      }).done(function (data) {
-        console.log('ajax data');
-
-        console.log(data);
-        updateQueue = data;
-      });
-
+        success: function () {
+          $('#itemTable').load(' #itemTable');
+        }
     });
   });
 
@@ -91,7 +80,8 @@
     });
   }
 
-  var videos = {{ items|json_encode|raw }};
+  var videos = {{ items|json_encode|raw }};  
+
 
 setInterval(
   function(){ 
@@ -104,21 +94,23 @@ setInterval(
         videos = data;
         console.log('ajax videos');
         console.log(videos);
+        var id =  setInterval(checkVideos, 10);
+        function checkVideos() {
+          if (videos.length > 0) {
+            document.getElementById("player").style.display = "block";
+            document.getElementById("title").style.display = "block";    
+            clearInterval(id);                
+          }else{
+            document.getElementById("player").style.display = "none";    
+            document.getElementById("title").style.display = "none";    
+          }
+        }
       }
     });
     return videos;
   }, 5000);
 
-
   console.log(videos);
-  if (updateQueue.length > videos.length) {
-    $.ajax({ 
-        url: "{{ path('updateQueueItem') }}",
-        type: 'GET',
-      }).done(function (data) {
-          $('#itemTable').load(' #itemTable');
-      });
-  }
     
 
   var index = 0;
@@ -146,12 +138,15 @@ setInterval(
 
   function onPlayerStateChange(event) {
     console.log("State change: " + event.data );
-    if (event.data == 1){
+    if (event.data == YT.PlayerState.PLAYING){
       document.getElementById("title").innerHTML ='Item ID: '+ player.getVideoData().title;
-
     }
 
-    if (event.data == 2){
+    if(event.data == YT.PlayerState.CUED && videos.length > 0){
+        event.target.playVideo();      
+    }
+
+    if (event.data == YT.PlayerState.PAUSED){
       console.log(Math.round(player.getCurrentTime()) + ' item id ' + videos[index].id); 
       var duration = Math.round(player.getCurrentTime());
       var id = videos[index].id;
@@ -165,50 +160,45 @@ setInterval(
       });
     }
 
-    // setInterval(
-    // function(){ 
-    //   var duration = getCurTime();
-    //   var id = videos[index].id;
-    //   $.ajax({ 
-    //     url: "{{ path('updateQueueStartSeconds', {'id': 'replaceId' ,'duration': 'replaceDuration'}) }}".replace('replaceId',id).replace("replaceDuration", duration),
-    //     type: 'POST',
-    //     async: false,
-    //     success: function (data) {
-    //       console.log(data);
-    //     }
-    //   });
-    // }, 3000);
+    setInterval(
+    function(){ 
+    // var duration = getCurTime();
+    // var id = videos[index].id;
+    // $.ajax({ 
+    //   url: "{{ path('updateQueueStartSeconds', {'id': 'replaceId' ,'duration': 'replaceDuration'}) }}".replace('replaceId',id).replace("replaceDuration", duration),
+    //   type: 'POST',
+    //   async: false,
+    //   success: function (data) {
+    //     console.log(data);
+    //   }
+    // });
+      if (videos.length == 0 ) {
+        event.target.stopVideo();
+      }else if(videos[index].item.uploadFilename != null && videos[index].item.uploadFilename != document.getElementById('myVideo').src){
+        //temporary
+        // event.target.stopVideo();
+        console.log('asdasdsa');
+        document.getElementById("myVideo").style.display = "none";
+        location.reload();
+      }else if (videos[index].item.videoId != player.getVideoData()['video_id'] && videos[index].item.playlist != player.getPlaylistId() ) {
+        checkQueue(index,event);
+      }
+    }, 3000);
 
     console.log('video');
     console.log(videos);  
 
-    if (event.data === YT.PlayerState.ENDED && player.getVideoLoadedFraction() > 0) {
+    if ( event.data === YT.PlayerState.ENDED && player.getVideoLoadedFraction() > 0 ) {
       console.log(index);
-      event.target.stopVideo();
       if (index < videos.length - 1) {
         index++;
-        if (videos[index].item.playlist){
-          event.target.loadPlaylist({
-                listType: 'playlist',
-                list: videos[index].item.playlist,
-          });
-          document.getElementById("removeQueue").click();
-        }else if(videos[index].item.uploadFilename){
-          document.getElementById("player").style.display = "none";
-          document.getElementById("myVideo").style.display = "block";
-          document.getElementById('myVideo').src = document.location.origin + '/uploads/' + videos[index].item.uploadFilename;
-          // document.getElementById('myVideo').currentTime = videos[index].startSeconds;
-          document.getElementById("title").innerHTML = 'Title: ' + videos[index].item.videoId;
-          document.getElementById("removeQueue").click();
-        }else{
-          event.target.loadVideoById({
-            videoId: videos[index].item.videoId,
-          });
-          document.getElementById("removeQueue").click();
-        }
+        checkQueue(index,event);
+        document.getElementById("removeQueue").click(); 
       }else{
+        event.target.stopVideo();
         document.getElementById("removeQueue").click();
       }
+           
     }
   }
 
@@ -230,12 +220,40 @@ setInterval(
     }
   }
 
+  function checkQueue(index,event) {
+      if (videos[index].item.playlist){
+        event.target.loadPlaylist({
+              listType: 'playlist',
+              list: videos[index].item.playlist,
+        });
+        // document.getElementById("removeQueue").click();
+      }else if(videos[index].item.uploadFilename){
+        document.getElementById("player").style.display = "none";
+        document.getElementById("myVideo").style.display = "block";
+        document.getElementById('myVideo').src = document.location.origin + '/uploads/' + videos[index].item.uploadFilename;
+        // document.getElementById('myVideo').currentTime = videos[index].startSeconds;
+        document.getElementById("title").innerHTML = 'Title: ' + videos[index].item.videoId;
+        // document.getElementById("removeQueue").click();
+        // player.getIframe().src = "http://localhost:8000/uploads/9950170b0d61e65776b866d9e66e35c8.mp4";
+      }else{
+        event.target.loadVideoById({
+          videoId: videos[index].item.videoId,
+        });
+        
+        // document.getElementById("removeQueue").click();
+      }
+  }
+
   //hides the video tag
   document.getElementById("myVideo").style.display = "none";
 
 // function getCurTime() { 
 //   return parseInt(Math.round(document.getElementById("myVideo").currentTime));
 // } 
+
+if (videos.length == 0) {
+  document.getElementById("player").style.display = "none";  
+}
 
 </script>
 
