@@ -13,7 +13,7 @@
             </center>
             <br>
             {{ form_row(form.videoId) }}
-            
+            <input class="btn btn-danger"  onclick="document.getElementById('item_videoId').value = ''" type="button" value="CLEAR"></input>
             <input id="submitData" class="btn btn-primary" type="submit" name="submit" value="SAVE"></input>
         {{form_end(form)}}
     </div>
