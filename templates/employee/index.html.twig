@@ -27,10 +27,10 @@
       {% for item in items %}
           <tr>
           <td id="videoId">item : {{item.item.videoId}}</td> 
-          {% if item.item.employee.id == app.user.employeeId.id %}
-            <td><a id="remove" class="btn btn-danger deleteItem" onclick="removeSpecificItem({{ item.id }})" data-path="{{ path('remove_itemqueue', {id: item.id}) }}">Remove</a></td>
-          {% else %}
+          {% if item.item.employee == null %}
             <td></td>            
+          {% elseif item.item.employee.id == app.user.employeeId.id%}
+            <td><a id="remove" class="btn btn-danger deleteItem" onclick="removeSpecificItem({{ item.id }})" data-path="{{ path('remove_itemqueue', {id: item.id}) }}">Remove</a></td>
           {% endif %}
             <td style='visibility:hidden'><a id="removeQueue" class="btn btn-danger deleteItem" onClick="deleteItem()" data-path="{{ path('remove_items', {id: item.id}) }}">Remove</a></td>
           </tr>
@@ -96,13 +96,21 @@ setInterval(
         console.log(videos);
         var id =  setInterval(checkVideos, 10);
         function checkVideos() {
-          if (videos.length > 0) {
-            document.getElementById("player").style.display = "block";
-            document.getElementById("title").style.display = "block";    
-            clearInterval(id);                
+          if (videos.length > 0) {            
+            if (videos[index].item.uploadFilename != null && document.getElementById('myVideo').src == '') {
+              document.getElementById("player").style.display = "block";
+              document.getElementById("title").style.display = "block";    
+              clearInterval(id);                
+            }else if (document.getElementById('myVideo').src == 'http://localhost:8000/employee/' || document.getElementById('myVideo').src == '') {
+              document.getElementById("player").style.display = "block";
+              document.getElementById("title").style.display = "block";  
+              clearInterval(id);                              
+            }else{
+              document.getElementById("player").style.display = "none";   
+            }
           }else{
             document.getElementById("player").style.display = "none";    
-            document.getElementById("title").style.display = "none";    
+            document.getElementById("title").style.display = "none"; 
           }
         }
       }
@@ -111,8 +119,6 @@ setInterval(
   }, 5000);
 
   console.log(videos);
-    
-
   var index = 0;
   // 4. The API will call this function when the video player is ready.
   function onPlayerReady(event) {
@@ -140,8 +146,10 @@ setInterval(
     console.log("State change: " + event.data );
     if (event.data == YT.PlayerState.PLAYING){
       document.getElementById("title").innerHTML ='Item ID: '+ player.getVideoData().title;
+      //Ajax method POST for boolean admin
     }
 
+    //check if boolean admin is true  && videos[index].item.adminStatus == 'true'
     if(event.data == YT.PlayerState.CUED && videos.length > 0){
         event.target.playVideo();      
     }
@@ -174,14 +182,38 @@ setInterval(
     // });
       if (videos.length == 0 ) {
         event.target.stopVideo();
-      }else if(videos[index].item.uploadFilename != null && videos[index].item.uploadFilename != document.getElementById('myVideo').src){
-        //temporary
-        // event.target.stopVideo();
-        console.log('asdasdsa');
+        document.getElementById("player").style.display = "none";
         document.getElementById("myVideo").style.display = "none";
-        location.reload();
-      }else if (videos[index].item.videoId != player.getVideoData()['video_id'] && videos[index].item.playlist != player.getPlaylistId() ) {
+        document.getElementById("title").style.display = "none";
+      }else if (videos[index].item.videoId != player.getVideoData()['video_id']  && videos[index].item.playlist != player.getPlaylistId() && videos[index].item.uploadFilename == null) {
+    console.log('video video_id');
+
+        event.target.stopVideo();       
         checkQueue(index,event);
+      }else if (videos[index].item.videoId != player.getVideoData()['video_id'] && videos[index].item.uploadFilename == null ) {
+    console.log('video_id');
+
+        event.target.stopVideo();              
+        checkQueue(index,event);
+      }else if(videos[index].item.uploadFilename != null && document.getElementById('myVideo').src != '' && document.getElementById("myVideo").style.display == 'block'){
+    console.log('video block');
+
+          var str = document.getElementById('myVideo').src;
+          var result = str.match(/[a-zA-Z\d]*.mp4/i);
+
+          if (result[0] != videos[index].item.uploadFilename) {
+            document.getElementById("myVideo").style.display = "none";
+            document.getElementById("title").style.display = "none";  
+            location.reload();
+          }
+      }else if(videos[index].item.uploadFilename == null && document.getElementById('myVideo').src != '' && document.getElementById("myVideo").style.display == 'block'){
+    console.log('video none');
+
+        document.getElementById("myVideo").style.display = "none";
+        document.getElementById("title").style.display = "none";
+        document.getElementById('myVideo').src = '';
+      }else if (videos[index].item.uploadFilename != null) {
+        checkQueue(index,event);        
       }
     }, 3000);
 
@@ -226,21 +258,16 @@ setInterval(
               listType: 'playlist',
               list: videos[index].item.playlist,
         });
-        // document.getElementById("removeQueue").click();
       }else if(videos[index].item.uploadFilename){
         document.getElementById("player").style.display = "none";
         document.getElementById("myVideo").style.display = "block";
         document.getElementById('myVideo').src = document.location.origin + '/uploads/' + videos[index].item.uploadFilename;
         // document.getElementById('myVideo').currentTime = videos[index].startSeconds;
         document.getElementById("title").innerHTML = 'Title: ' + videos[index].item.videoId;
-        // document.getElementById("removeQueue").click();
-        // player.getIframe().src = "http://localhost:8000/uploads/9950170b0d61e65776b866d9e66e35c8.mp4";
       }else{
         event.target.loadVideoById({
           videoId: videos[index].item.videoId,
         });
-        
-        // document.getElementById("removeQueue").click();
       }
   }
 

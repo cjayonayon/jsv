@@ -28,7 +28,7 @@ class QueueRepository extends ServiceEntityRepository
             ->addSelect('g')
             ->innerJoin('q.item', 'i')
             ->addSelect('i')
-            ->innerJoin('i.employee', 'ie')
+            ->leftJoin('i.employee', 'ie')
             ->addSelect('ie')
             ->andWhere('q.employeeGroup = :group')
             ->setParameter('group', $group)

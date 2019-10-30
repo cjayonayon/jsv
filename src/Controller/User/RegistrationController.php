@@ -89,8 +89,16 @@ class RegistrationController extends AbstractController
             ->getRepository(User::class)
             ->findOneBy(['username'=>$invitedUser]);
 
+        $userAll = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->findOneBy(['group'=>$userEntity->getUserGroup()]);
+
         if($usera){
             throw $this->createAccessDeniedException('Username already taken.');
+        }
+
+        if($userAll){
+            throw $this->createAccessDeniedException('Group is already taken.');
         }
 
         $userEntitys = $this->getDoctrine()

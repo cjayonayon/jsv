@@ -29,7 +29,7 @@ class PayrollType extends AbstractType
                     'placeholder' => 'yyyy/mm/dd'
                 ],
                 'html5' => false,
-                'label' => 'Date of Payment'
+                'label' => 'Date of Payment',
             ])
             ->add('startCoverage', DateType::class,[
                 'widget' => 'single_text',

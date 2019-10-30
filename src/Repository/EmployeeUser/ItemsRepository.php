@@ -22,7 +22,7 @@ class ItemsRepository extends ServiceEntityRepository
     public function findEmployeeItems($group)
     {
         return $this->createQueryBuilder('i')
-            ->innerJoin('i.employee', 'e')
+            ->leftJoin('i.employee', 'e')
             ->addSelect('e')
             ->innerJoin('i.itemGroup', 'g')
             ->addSelect('g')
@@ -39,7 +39,7 @@ class ItemsRepository extends ServiceEntityRepository
     public function checkMaxItemPerHour($id, $date)
     {
         return $this->createQueryBuilder('i')
-            ->innerJoin('i.employee', 'e')
+            ->leftJoin('i.employee', 'e')
             ->andWhere('e.id = :id')
             ->setParameter('id', $id)
             ->andWhere('i.removedAt >= :date')
@@ -54,7 +54,7 @@ class ItemsRepository extends ServiceEntityRepository
     public function getItemByEmployee($item,$group)
     {
         return $this->createQueryBuilder('i')
-            ->innerJoin('i.employee', 'e')
+            ->leftJoin('i.employee', 'e')
             ->addSelect('e')
             ->andWhere('i.itemGroup = :id')
             ->setParameter('id', $group)
@@ -63,6 +63,27 @@ class ItemsRepository extends ServiceEntityRepository
             ->orderBy('i.id', 'ASC')
             ->getQuery()
             ->getOneOrNullResult()
+        ;
+    }
+
+    public function findAdminUserItems($user, $group)
+    {
+        return $this->createQueryBuilder('i')
+            ->leftJoin('i.employee', 'e')
+            ->addSelect('e')
+            ->innerJoin('i.adminUser', 'a')
+            ->addSelect('a')
+            ->andWhere('i.itemGroup = :id')
+            ->setParameter('id', $group)
+            ->andWhere('i.adminUser = :adminUser')
+            ->setParameter('adminUser', $user)
+            ->andWhere('i.status = :stat')
+            ->setParameter('stat', 'Add')
+            ->andWhere('i.adminQueue = :queStat')
+            ->setParameter('queStat', 'Add')    
+            ->orderBy('i.id', 'ASC')
+            ->getQuery()
+            ->getArrayResult()
         ;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Entity\EmployeeUser;
 
 use App\Entity\Admin\Group;
 use App\Entity\Sysadmin\Employee;
+use App\Entity\Sysadmin\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,7 +34,7 @@ class Items
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Sysadmin\Employee", inversedBy="employeeItems")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $employee;
 
@@ -76,9 +77,33 @@ class Items
      */
     private $queues;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Sysadmin\User", inversedBy="items")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $adminUser;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $adminStatus;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $adminQueue;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $adminStartSeconds;
+
     public function __construct()
     {
         $this->status = 'Add';
+        $this->adminStatus = 'false';
+        $this->adminStartSeconds = 0;
+        $this->adminQueue = 'Add';
         $this->removedAt = new \DateTime();
         $this->queues = new ArrayCollection();
     }
@@ -150,7 +175,7 @@ class Items
 
     public function checkAddedItem(Group $itemGroup)
     {
-        return $this->itemGroup == $itemGroup && $this->status == 'Removed' && ($this->removedAt->modify('+2 hours') < new \DateTime());
+        return $this->itemGroup == $itemGroup && $this->status == 'Removed' && ( ($this->removedAt->modify('+2 hours'))->format('U') < (new \DateTime())->format('U') );
     }
 
     public function checkDuplicateItem(Employee $employee)
@@ -219,6 +244,54 @@ class Items
                 $queue->setItem(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAdminUser(): ?User
+    {
+        return $this->adminUser;
+    }
+
+    public function setAdminUser(?User $adminUser): self
+    {
+        $this->adminUser = $adminUser;
+
+        return $this;
+    }
+
+    public function getAdminStatus(): ?string
+    {
+        return $this->adminStatus;
+    }
+
+    public function setAdminStatus(?string $adminStatus): self
+    {
+        $this->adminStatus = $adminStatus;
+
+        return $this;
+    }
+
+    public function getAdminQueue(): ?string
+    {
+        return $this->adminQueue;
+    }
+
+    public function setAdminQueue(?string $adminQueue): self
+    {
+        $this->adminQueue = $adminQueue;
+
+        return $this;
+    }
+
+    public function getAdminStartSeconds(): ?int
+    {
+        return $this->adminStartSeconds;
+    }
+
+    public function setAdminStartSeconds(?int $adminStartSeconds): self
+    {
+        $this->adminStartSeconds = $adminStartSeconds;
 
         return $this;
     }

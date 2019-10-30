@@ -11,7 +11,10 @@
         </div>
     {% endfor %}
     {{form_start(form, {'attr': {'novalidate':'novalidate'}})}}
-            <center><a class="btn btn-secondary" href="{{ path('record_book') }}">Home</a></center>
+            <center>
+                <a class="btn btn-info" href="{{ path('record_book') }}">Home</a>
+                <a href="{{ path('report_info') }}" class="btn btn-primary">REPORT</a>           
+            </center>
             <br>
 
             {{form_widget(form)}}
@@ -23,15 +26,15 @@
 $(document).ready(function(){
 
 $('#payroll_paymentDate').datepicker({
-    dateFormat: "yy/mm/dd",
+    dateFormat: "yy-mm-dd",
 });
 
 $('#payroll_startCoverage').datepicker({
-    dateFormat: "yy/mm/dd",
+    dateFormat: "yy-mm-dd",
 });
 
 $('#payroll_endCoverage').datepicker({
-    dateFormat: "yy/mm/dd",
+    dateFormat: "yy-mm-dd",
 });
 
 $('#payroll_startCoverage, #payroll_endCoverage').change(function(){

@@ -16,7 +16,7 @@ use App\Security\User\LoginAppAuthenticator;
 class RegistrationController extends AbstractController
 {
     /**
-     * @Route("/register/{id}", name="employee_register")
+     * @Route("/register/employee/{id}", name="employee_register")
      */
     public function register(string $id, Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, LoginAppAuthenticator $authenticator): Response
     {
