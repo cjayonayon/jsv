@@ -48,7 +48,7 @@ class Payroll
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Sysadmin\Employee", inversedBy="employeePayrolls")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank(message="Please select a group")
+     * @Assert\NotBlank(message="Please select an Employee")
      */
     private $employeePayroll;
 

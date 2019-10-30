@@ -3,6 +3,9 @@
 namespace App\Entity\Sysadmin;
 
 use App\Entity\Admin\Group;
+use App\Entity\EmployeeUser\Items;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -66,6 +69,16 @@ class User implements UserInterface
      * @ORM\OneToOne(targetEntity="App\Entity\Admin\Group", inversedBy="user", cascade={"persist", "remove"})
      */
     private $group;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\EmployeeUser\Items", mappedBy="adminUser")
+     */
+    private $items;
+
+    public function __construct()
+    {
+        $this->items = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -185,6 +198,37 @@ class User implements UserInterface
     public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Items[]
+     */
+    public function getItems(): Collection
+    {
+        return $this->items;
+    }
+
+    public function addItem(Items $item): self
+    {
+        if (!$this->items->contains($item)) {
+            $this->items[] = $item;
+            $item->setAdminUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItem(Items $item): self
+    {
+        if ($this->items->contains($item)) {
+            $this->items->removeElement($item);
+            // set the owning side to null (unless already changed)
+            if ($item->getAdminUser() === $this) {
+                $item->setAdminUser(null);
+            }
+        }
 
         return $this;
     }

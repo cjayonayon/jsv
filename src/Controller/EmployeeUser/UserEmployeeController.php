@@ -12,6 +12,7 @@ use App\Form\EmployeeUser\UploadItemType;
 use App\Entity\EmployeeUser\EmployeeUser;
 use App\Entity\EmployeeUser\Queue;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Entity\Sysadmin\User;
 
 /**
  * @Route("/employee")
@@ -75,10 +76,15 @@ class UserEmployeeController extends AbstractController
         $employeeUser = $this->getDoctrine()
             ->getRepository(EmployeeUser::class)
             ->findOneBy(['username'=>$this->getUser()->getUsername()]);
+        
+        $adminUser = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->findOneBy(['group'=>$employeeUser->getEmployeeGroup()]);
 
         $item = new Items();
         $item->setEmployee($employeeUser->getEmployeeId());
         $item->setItemGroup($employeeUser->getEmployeeGroup());
+        $item->setAdminUser($adminUser);
 
         $form = $this->createForm(ItemType::class,$item);
         $form->handleRequest($request);
