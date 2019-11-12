@@ -171,10 +171,10 @@ class Group
         $this->user = $user;
 
         // set (or unset) the owning side of the relation if necessary
-        $newGroupId = $user === null ? null : $this;
-        if ($newGroupId !== $user->getGroupId()) {
-            $user->setGroupId($newGroupId);
-        }
+        // $newGroupId = $user === null ? null : $this;
+        // if ($newGroupId !== $user->getGroupId()) {
+        //     $user->setGroupId($newGroupId);
+        // }
 
         return $this;
     }

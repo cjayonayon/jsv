@@ -43,7 +43,19 @@ class InvitationController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
 
             $email = $userInvitation->getEmail();//has email  
-            $this->composeMail($userInvitation, $mailer, $email, $logger);
+            $user = explode('@', $email);
+            $username = $user[0];//username
+            $password = substr(md5(uniqid(rand(), true)), 0, 5);
+            $userInvitation->setUsername($username);
+            $userInvitation->setPassword($password);
+            
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($userInvitation);
+            $entityManager->flush();
+
+            $this->sendMail($userInvitation, $mailer);
+
+            $logger->info('Email Successfully Sent.');
             $this->addFlash('notice', 'Email Successfully Sent');        
         }
 
@@ -108,7 +120,7 @@ class InvitationController extends AbstractController
                 'admin/mail.html.twig',
                 [
                     'username' => $userInvitation->getUsername(),
-                    'groupName' => $userInvitation->getUserGroup()->getGroupName(),
+                    'groupName' => $userInvitation->getUserGroup(),
                     'password' => $userInvitation->getPassword(),
                     'longId' => $userInvitation->getLongId(),
                 ]
@@ -119,20 +131,4 @@ class InvitationController extends AbstractController
         
     }
 
-    private function composeMail(Invitation $userInvitation, \Swift_Mailer $mailer, string $email, LoggerInterface $logger)
-    {
-        $user = explode('@', $email);
-        $username = $user[0];//username
-        $password = substr(md5(uniqid(rand(), true)), 0, 5);
-        $userInvitation->setUsername($username);
-        $userInvitation->setPassword($password);
-        
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($userInvitation);
-        $entityManager->flush();
-        
-        $this->sendMail($userInvitation, $mailer);
-
-        $logger->info('Email Successfully Sent.');
-    }
 }
