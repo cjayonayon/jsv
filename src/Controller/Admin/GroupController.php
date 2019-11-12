@@ -27,7 +27,7 @@ class GroupController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             /** @var UploadedFile $uploadedFile */
-            $uploadedFile = $form['groupBanner']->getData();
+            $uploadedFile = $form->getData()->getGroupBanner();
             if($uploadedFile){
                 $destination = $this->getParameter('uploads_directory');
                     
@@ -80,13 +80,13 @@ class GroupController extends AbstractController
             throw $this->createNotFoundException("Page not Found");
         }
         $img =  $group->getGroupBanner();
+        $group->setGroupBanner(null);   
         $form = $this->createForm(GroupType::class, $group);
         
-        $group->setGroupBanner(null);   
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             /** @var UploadedFile $uploadedFile */
-            $uploadedFile = $form['groupBanner']->getData();
+            $uploadedFile = $group->getGroupBanner();
 
             if($uploadedFile){
                 $destination = $this->getParameter('uploads_directory');
@@ -97,7 +97,7 @@ class GroupController extends AbstractController
                     $newFilename
                 );
                 $filePath = $destination.'/'.$img; //file path of the existing file
-                unlink($filePath); //deletes the file
+                // unlink($filePath); //deletes the file
                 $group->setGroupBanner($newFilename);
             }else{
                 $group->setGroupBanner($img);

@@ -16,7 +16,6 @@ class GroupType extends AbstractType
             ->add('groupName')
             ->add('groupDescription')
             ->add('groupBanner', FileType::class, [
-                'mapped' => false,
                 'required' => false
             ])
             ->add('employeeLimit')

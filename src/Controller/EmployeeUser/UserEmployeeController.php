@@ -212,6 +212,7 @@ class UserEmployeeController extends AbstractController
 
         if ($queue == null) {
             $item->setStatus('Removed');
+            $item->setAdminQueue('Removed');
             $item->setRemovedAt(new \DateTime());
             $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($item);
